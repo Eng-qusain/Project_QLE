@@ -1,0 +1,41 @@
+# ── Core & I/O ──────────────────────────────────────────────
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.11.0
+scikit-learn>=1.3.0
+
+# ── File Parsers ─────────────────────────────────────────────
+PyMuPDF>=1.23.0          # PDF reading (fitz)
+python-docx>=0.8.11      # DOCX reading
+lxml>=4.9.0              # XML parsing
+Pillow>=10.0.0           # JPG / image reading
+lasio>=0.31              # LAS well log files
+segyio>=1.9.11           # SEG-Y seismic files
+openpyxl>=3.1.0          # Excel / CSV support
+
+# ── AI / ML ──────────────────────────────────────────────────
+torch>=2.1.0             # PyTorch (optional heavy dep)
+transformers>=4.35.0     # HuggingFace for NLP on reports
+anthropic>=0.25.0        # Claude API for AI interpretation
+
+# ── Geoscience / Visualization (backend only) ────────────────
+matplotlib>=3.7.0        # Static plots saved to file
+seaborn>=0.12.0          # Statistical plots
+plotly>=5.17.0           # Interactive plots (later Streamlit)
+obspy>=1.4.0             # Seismic processing helpers
+welly>=0.5.4             # Well log correlation helpers
+
+# ── Statistics ───────────────────────────────────────────────
+statsmodels>=0.14.0      # Statistical analysis
+pymc>=5.0.0              # Bayesian (optional)
+
+# ── Utilities ────────────────────────────────────────────────
+pydantic>=2.0.0          # Data models / validation
+loguru>=0.7.0            # Logging
+tqdm>=4.65.0             # Progress bars
+rich>=13.0.0             # CLI pretty output
+python-dotenv>=1.0.0     # Env vars
+
+# ── Streamlit (Phase 2 – UI) ─────────────────────────────────
+# streamlit>=1.28.0
+# streamlit-plotly-events>=0.0.6
