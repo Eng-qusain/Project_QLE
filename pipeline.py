@@ -25,10 +25,10 @@ from typing import List, Optional
 from rich.console import Console
 from rich.progress import track
 
-from geoai.core.models import InterpretationReport, WellLog
-from geoai.parsers      import parse_las, parse_file, detect_file_type
-from geoai.core.models  import FileType
-from geoai.analysis     import (
+from Project_QLE.core.models import InterpretationReport, WellLog
+from Project_QLE.parsers      import parse_las, parse_file, detect_file_type
+from Project_QLE.core.models  import FileType
+from Project_QLE.analysis     import (
     PetrophysicsEngine,
     KMeansFacies,
     RuleBasedFacies,
