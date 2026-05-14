@@ -93,6 +93,7 @@ class ParsedFile(BaseModel):
 
 class WellHeader(BaseModel):
     well_name  : str = "UNKNOWN"
+    basin      : Optional[str] = None
     uwi        : Optional[str] = None
     field      : Optional[str] = None
     company    : Optional[str] = None
