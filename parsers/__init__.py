@@ -1,3 +1,4 @@
+## Project_QLE/parsers/__init__.py
 from .file_parser import parse_file, detect_file_type
 from .las_parser  import parse_las, las_to_parsed_file
 

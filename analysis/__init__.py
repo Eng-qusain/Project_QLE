@@ -1,3 +1,4 @@
+## Project_QLE/analysis/__init__.py
 from .petrophysics   import PetrophysicsEngine, vshale_gr, porosity_density, sw_archie, pore_pressure_eaton
 from .facies         import RuleBasedFacies, KMeansFacies, RFFaciesClassifier, labels_to_zones
 from .statistics     import descriptive_stats, batch_stats, pearson_matrix, cross_correlate_curves, monte_carlo_porosity

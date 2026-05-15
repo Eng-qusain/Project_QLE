@@ -1,8 +1,8 @@
 # Project_QLE – Oil Exploration Interpretation Platform
 
-> **Phase 1 — Backend Core** (no UI)  
-> Phase 2 will add a Streamlit dashboard
-
+> **Phase 1 — Backend Core** (prototype Streamlit dashboard included)  
+> AI-assisted well-log interpretation with both Claude and Gemini support
+## Project_QLE/README.md
 ---
 
 ## Architecture
@@ -10,7 +10,8 @@
 ```
 Project_QLE/
 ├── core/
-│   └── models.py           ← Pydantic data models (WellLog, ReservoirSummary, …)
+│   ├── models.py           ← Pydantic data models (WellLog, ReservoirSummary, …)
+│   └── libya_geology.py    ← Basin defaults & Libyan field metadata
 │
 ├── parsers/
 │   ├── file_parser.py      ← PDF, DOCX, XML, JPG, CSV
@@ -18,20 +19,23 @@ Project_QLE/
 │   └── segy_parser.py      ← SEG-Y seismic files
 │
 ├── analysis/
-│   ├── petrophysics.py     ← Vshale, porosity (ρ/N/sonic), Sw (Archie/Simandoux), pressure (Eaton), perm
+│   ├── petrophysics.py     ← Vshale, porosity (ρ/N/sonic), Sw (Archie/Simandoux), pressure, perm
 │   ├── facies.py           ← Rule-based, KMeans, Random Forest, MLP classifiers
 │   ├── statistics.py       ← Descriptive stats, normality tests, outlier detection, MC uncertainty
 │   ├── log_correlation.py  ← Cross-well Pearson/DTW, formation top picking, marker correlation
 │   └── reservoir.py        ← Net pay, fluid contacts, FZI, Lorenz, STOIIP/GIIP
 │
 ├── ai/
-│   ├── interpreter.py      ← Claude API: reservoir narrative, correlation commentary, Q&A
-│   └── map_generator.py    ← Interpolated property maps, isopach, structure, seismic amplitude
+│   ├── interpreter.py      ← Anthropic Claude API: reservoir narrative, Q&A, anomaly explanation
+│   ├── gemini_interpreter.py ← Google Gemini API: Libya-calibrated geological interpretation
+│   └── map_generator.py    ← Interpolated property maps, isopach, structure contours
 │
-├── pipeline.py             ← End-to-end orchestrator
-├── tests/
-│   └── test_pipeline.py    ← Synthetic unit + integration tests
-└── requirements.txt
+├── app.py                  ← Streamlit dashboard (interactive UI)
+├── pipeline.py             ← End-to-end orchestration pipeline
+├── requirements.txt        ← Dependencies (pip install -r requirements.txt)
+└── tests/
+    ├── test_core.py        ← Unit tests with Libya-calibrated synthetic wells
+    └── test_pipeline.py    ← Integration tests (run with --demo flag)
 ```
 
 ---
@@ -56,7 +60,13 @@ python Project_QLE/tests/test_pipeline.py --demo
 python -m pytest Project_QLE/tests/ -v
 ```
 
-### 4. Use the pipeline with your own data
+### 4. Run the Streamlit dashboard
+
+```bash
+streamlit run app.py
+```
+
+### 5. Use the pipeline with your own data
 
 ```python
 import os
@@ -92,7 +102,7 @@ from Project_QLE.parsers          import parse_las
 from Project_QLE.analysis         import PetrophysicsEngine, KMeansFacies, labels_to_zones
 from Project_QLE.analysis         import descriptive_stats, correlate_wells
 from Project_QLE.analysis         import build_reservoir_summary
-from Project_QLE.ai               import AIInterpreter
+from Project_QLE.ai               import AIInterpreter, GeminiInterpreter
 from Project_QLE.ai.map_generator import property_map, isopach_map
 
 # Parse a LAS file
@@ -167,7 +177,7 @@ fig = property_map([well], [rs], prop="avg_porosity", save_path="phi_map.png")
 - Flow zone indicator (FZI) + Lorenz coefficient
 - STOIIP / GIIP volumetric estimation
 
-### AI Interpretation (Claude)
+### AI Interpretation (Claude / Gemini)
 - Reservoir narrative reports
 - Cross-well correlation commentary
 - Anomaly explanation

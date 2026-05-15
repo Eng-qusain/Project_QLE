@@ -1,3 +1,4 @@
+## Project_QLE/core/__init__.py
 from .models import (
     FileType, CurveType, Facies, FluidType,
     ParsedFile, WellHeader, WellCurve, WellLog,

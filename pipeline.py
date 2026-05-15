@@ -1,202 +1,198 @@
 """
-Project_QLE/pipeline.py
-──────────────────
-Main orchestration pipeline.
-
-Connects parsers → analysis → AI into a single callable.
+project_QLE/pipeline.py
+────────────────────────
+Main orchestration pipeline for Libya exploration data.
 
 Usage
 ─────
-    from Project_QLE.pipeline import GeoAIPipeline
+    from project_QLE.pipeline import QLEPipeline
 
-    pipe = GeoAIPipeline(project_name="Block-7 Exploration")
-    pipe.add_las("well_A.las")
-    pipe.add_las("well_B.las")
+    pipe = QLEPipeline("Sirte Block 47", basin="SIRTE")
+    pipe.add_las("WELL_A.las").add_las("WELL_B.las")
     report = pipe.run()
     print(report.ai_summary)
 """
-
 from __future__ import annotations
 
 import logging
 from pathlib import Path
 from typing import List, Optional
 
-from rich.console import Console
-from rich.progress import track
-
-from Project_QLE.core.models import InterpretationReport, WellLog
-from Project_QLE.parsers      import parse_las, parse_file, detect_file_type
-from Project_QLE.core.models  import FileType
-from Project_QLE.analysis     import (
+from project_QLE.core.models import InterpretationReport, WellLog
+from project_QLE.parsers      import parse_las
+from project_QLE.analysis     import (
     PetrophysicsEngine,
     KMeansFacies,
     RuleBasedFacies,
     labels_to_zones,
     batch_stats,
     correlate_well_suite,
-    correlate_markers_across_wells,
     build_reservoir_summary,
 )
 
-logger  = logging.getLogger(__name__)
-console = Console()
+logger = logging.getLogger(__name__)
+
+# Standard log curves to run statistics on
+_STAT_CURVES = ["GR", "RHOB", "NPHI", "RT", "PHIE", "SW", "PERM_mD"]
 
 
-class GeoAIPipeline:
+class QLEPipeline:
     """
-    Full interpretation pipeline for oil exploration data.
+    Project_QLE – Libya exploration interpretation pipeline.
 
     Parameters
     ----------
-    project_name    : Name of the exploration project.
-    use_ai          : If True and ANTHROPIC_API_KEY is set, call Claude for narratives.
-    facies_method   : 'rules' | 'kmeans' (default: 'kmeans')
+    project_name   : Display name for the project / report.
+    basin          : Active Libyan basin ('SIRTE', 'GHADAMES', 'MURZUQ', …).
+    use_ai         : If True, call Gemini for narrative interpretation.
+    facies_method  : 'kmeans' (unsupervised) or 'rules' (deterministic).
+    gemini_api_key : Gemini API key. Falls back to GEMINI_API_KEY env var.
+    n_facies       : Number of KMeans clusters (ignored for rules method).
     """
 
     def __init__(
         self,
-        project_name: str    = "Unnamed Project",
-        use_ai: bool         = True,
-        facies_method: str   = "kmeans",
-        api_key: Optional[str] = None,
+        project_name   : str           = "Project_QLE",
+        basin          : str           = "SIRTE",
+        use_ai         : bool          = True,
+        facies_method  : str           = "kmeans",
+        gemini_api_key : Optional[str] = None,
+        n_facies       : int           = 5,
     ):
-        self.project_name  = project_name
-        self.use_ai        = use_ai
-        self.facies_method = facies_method
-        self.api_key       = api_key
+        self.project_name   = project_name
+        self.basin          = basin.upper()
+        self.use_ai         = use_ai
+        self.facies_method  = facies_method
+        self.gemini_api_key = gemini_api_key
+        self.n_facies       = n_facies
+        self._wells: List[WellLog] = []
 
-        self._wells       : List[WellLog]        = []
-        self._extra_files : List[Path]           = []
+    # ── Well registration ────────────────────────────────────
 
-    # ─────────────────────────────────────────
-    #  Input registration
-    # ─────────────────────────────────────────
-
-    def add_las(self, path: str | Path) -> "GeoAIPipeline":
-        """Parse and register a LAS file."""
+    def add_las(self, path: str | Path) -> "QLEPipeline":
+        """Parse a LAS file and register the well."""
         well = parse_las(path)
+        well.header.basin = self.basin
         self._wells.append(well)
-        console.print(f"[green]✓[/green] Loaded well [bold]{well.header.well_name}[/bold]"
-                      f" ({len(well.curves)} curves, "
-                      f"{well.header.start_depth:.0f}–{well.header.stop_depth:.0f} m)")
+        logger.info(
+            "Loaded: %s  (%d curves, %.0f–%.0f m, basin=%s)",
+            well.header.well_name, len(well.curves),
+            well.header.start_depth or 0,
+            well.header.stop_depth  or 0,
+            self.basin,
+        )
         return self
 
-    def add_file(self, path: str | Path) -> "GeoAIPipeline":
-        """Register any other supported file (PDF, CSV, XML, etc.)."""
-        self._extra_files.append(Path(path))
+    def add_well(self, well: WellLog) -> "QLEPipeline":
+        """Register a WellLog object that was already parsed (e.g. from the UI)."""
+        well.header.basin = self.basin
+        self._wells.append(well)
         return self
 
-    # ─────────────────────────────────────────
-    #  Run
-    # ─────────────────────────────────────────
+    # ── Pipeline execution ───────────────────────────────────
 
     def run(self) -> InterpretationReport:
-        """Execute the full pipeline and return an InterpretationReport."""
-        console.rule("[bold blue]Project_QLE Interpretation Pipeline")
+        """Run the full interpretation pipeline and return an InterpretationReport."""
+        _log = logger.info
+        _log("=" * 55)
+        _log("  Project_QLE Pipeline  │  %s", self.project_name)
+        _log("=" * 55)
+
         report = InterpretationReport(
             project_name = self.project_name,
+            basin        = self.basin,
             wells        = self._wells,
         )
 
         if not self._wells:
-            console.print("[yellow]⚠ No wells loaded – returning empty report.[/yellow]")
+            logger.warning("No wells loaded – returning empty report.")
             return report
 
-        # ── 1. Petrophysics ──────────────────
-        console.print("\n[cyan]Step 1: Petrophysical analysis[/cyan]")
         petro_dfs = {}
-        for well in track(self._wells, description="Computing petrophysics …"):
-            try:
-                engine = PetrophysicsEngine(well)
-                petro_dfs[well.header.well_name] = engine.run()
-                # Update well's internal df with derived columns
-                well.df = petro_dfs[well.header.well_name]
-            except Exception as e:
-                logger.error("Petrophysics failed for %s: %s", well.header.well_name, e)
-                report.warnings.append(f"Petrophysics error ({well.header.well_name}): {e}")
 
-        # ── 2. Facies classification ─────────
-        console.print("\n[cyan]Step 2: Facies classification[/cyan]")
-        for well in track(self._wells, description="Classifying facies …"):
-            df = petro_dfs.get(well.header.well_name, well.df)
+        # ── Step 1: Petrophysics ─────────────────────────────
+        _log("[1/5] Petrophysical analysis …")
+        for well in self._wells:
+            try:
+                eng = PetrophysicsEngine(well, basin=self.basin)
+                df  = eng.run()
+                petro_dfs[well.header.well_name] = df
+                well.df = df
+            except Exception as exc:
+                msg = f"Petrophys error ({well.header.well_name}): {exc}"
+                report.warnings.append(msg)
+                logger.error(msg)
+
+        # ── Step 2: Facies + Reservoir ───────────────────────
+        _log("[2/5] Facies classification & reservoir characterisation …")
+        for well in self._wells:
+            df = petro_dfs.get(well.header.well_name) or well.df
             if df is None or df.empty:
                 continue
             try:
                 if self.facies_method == "rules":
-                    clf = RuleBasedFacies()
-                    facies_labels = clf.classify(df)
+                    labels = RuleBasedFacies().classify(df)
                 else:
-                    clf = KMeansFacies(n_clusters=5)
-                    facies_labels = clf.fit_predict(df)
-                df["FACIES"] = facies_labels
-                depth = well.get_depth()
-                if depth is not None:
-                    zones = labels_to_zones(depth, facies_labels)
-                else:
-                    zones = []
-            except Exception as e:
-                logger.error("Facies error for %s: %s", well.header.well_name, e)
-                report.warnings.append(f"Facies error ({well.header.well_name}): {e}")
-                zones = []
+                    labels = KMeansFacies(n_clusters=self.n_facies).fit_predict(df)
 
-            # ── 3. Reservoir characterisation ─
-            try:
-                rs = build_reservoir_summary(well, df, zones)
+                df["FACIES"] = labels
+                well.df      = df
+                depth  = well.get_depth()
+                zones  = labels_to_zones(depth, labels) if depth is not None else []
+                rs     = build_reservoir_summary(well, df, zones)
+                rs.basin = self.basin
                 report.reservoirs.append(rs)
-            except Exception as e:
-                logger.error("Reservoir summary error for %s: %s", well.header.well_name, e)
-                report.warnings.append(f"Reservoir error ({well.header.well_name}): {e}")
+            except Exception as exc:
+                msg = f"Facies/Reservoir error ({well.header.well_name}): {exc}"
+                report.warnings.append(msg)
+                logger.error(msg)
 
-        # ── 4. Statistical analysis ──────────
-        console.print("\n[cyan]Step 3: Statistical analysis[/cyan]")
-        for well in track(self._wells, description="Computing statistics …"):
+        # ── Step 3: Statistics ───────────────────────────────
+        _log("[3/5] Statistical analysis …")
+        for well in self._wells:
             try:
-                stats = batch_stats(well, ["GR", "RHOB", "NPHI", "PHIE", "SW"])
-                report.statistics.extend(stats)
-            except Exception as e:
-                report.warnings.append(f"Stats error ({well.header.well_name}): {e}")
+                report.statistics.extend(batch_stats(well, _STAT_CURVES))
+            except Exception as exc:
+                report.warnings.append(f"Stats error ({well.header.well_name}): {exc}")
 
-        # ── 5. Cross-well correlation ─────────
+        # ── Step 4: Cross-well correlation ───────────────────
         if len(self._wells) >= 2:
-            console.print("\n[cyan]Step 4: Cross-well log correlation[/cyan]")
+            _log("[4/5] Cross-well log correlation …")
             try:
                 report.correlations = correlate_well_suite(
                     self._wells, curves=["GR", "RHOB"]
                 )
-                console.print(f"  [green]✓[/green] {len(report.correlations)} correlation pairs computed")
-            except Exception as e:
-                report.warnings.append(f"Correlation error: {e}")
+                _log("  ✓ %d correlation pairs computed", len(report.correlations))
+            except Exception as exc:
+                report.warnings.append(f"Correlation error: {exc}")
+        else:
+            _log("[4/5] Cross-well correlation skipped (need ≥2 wells)")
 
-        # ── 6. AI interpretation ─────────────
+        # ── Step 5: AI interpretation ────────────────────────
         if self.use_ai:
-            console.print("\n[cyan]Step 5: AI interpretation (Claude)[/cyan]")
+            _log("[5/5] AI interpretation (Gemini) …")
             try:
-                from Project_QLE.ai import AIInterpreter
-                ai = AIInterpreter(api_key=self.api_key)
+                from project_QLE.ai.gemini_interpreter import GeminiInterpreter
+                ai = GeminiInterpreter(api_key=self.gemini_api_key)
+                for rs in report.reservoirs:
+                    stats_for = [s for s in report.statistics if s.well == rs.well_name]
+                    ai.interpret_reservoir(rs, stats_for)
+                if report.reservoirs:
+                    ai.summarise_report(report)
+            except Exception as exc:
+                msg = f"AI error: {exc}"
+                report.warnings.append(msg)
+                logger.error(msg)
+        else:
+            _log("[5/5] AI interpretation skipped (use_ai=False)")
 
-                for rs in track(report.reservoirs, description="Generating AI narratives …"):
-                    stats_for_well = [s for s in report.statistics if s.well == rs.well_name]
-                    rs.ai_narrative = ai.interpret_reservoir(rs, stats_for_well)
-
-                if len(report.reservoirs) > 0:
-                    report.ai_summary = ai.summarise_report(report)
-
-            except Exception as e:
-                logger.error("AI interpretation failed: %s", e)
-                report.warnings.append(f"AI error: {e}")
-
-        # ── Summary ───────────────────────────
-        console.rule()
-        console.print(
-            f"[bold green]Pipeline complete[/bold green]  "
-            f"Wells: {len(report.wells)} | "
-            f"Reservoirs: {len(report.reservoirs)} | "
-            f"Correlations: {len(report.correlations)} | "
-            f"Warnings: {len(report.warnings)}"
+        # ── Done ─────────────────────────────────────────────
+        _log("=" * 55)
+        _log(
+            "  ✓ Complete │ Wells:%d  Reservoirs:%d  Warnings:%d",
+            len(report.wells), len(report.reservoirs), len(report.warnings),
         )
-        if report.warnings:
-            for w in report.warnings:
-                console.print(f"  [yellow]⚠[/yellow] {w}")
+        for w in report.warnings:
+            logger.warning("  ⚠ %s", w)
 
         return report
