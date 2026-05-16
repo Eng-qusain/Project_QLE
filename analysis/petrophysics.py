@@ -20,6 +20,7 @@ from typing import Optional, Tuple
 import numpy as np
 import pandas as pd
 
+from project_QLE.core.libya_geology import get_basin_defaults
 from project_QLE.core.models import WellLog
 
 logger = logging.getLogger(__name__)
@@ -235,22 +236,48 @@ class PetrophysicsEngine:
     def __init__(
         self,
         well: WellLog,
-        gr_clean: float = 15.0,
-        gr_shale: float = 120.0,
-        rho_matrix: float = 2.65,
-        rho_fluid: float  = 1.00,
-        rw: float = 0.05,
-        rsh: float = 2.0,
-        vsh_method: str = "larionov_young",
+        basin: str | None = None,
+        *,
+        gr_clean: float | None = None,
+        gr_shale: float | None = None,
+        rho_matrix: float | None = None,
+        rho_fluid: float | None  = None,
+        rw: float | None = None,
+        rsh: float | None = None,
+        vsh_method: str | None = None,
+        overburden_gradient: float | None = None,
+        hydrostatic_gradient: float | None = None,
+        normal_dt_surface: float | None = None,
+        normal_dt_exp: float | None = None,
     ):
-        self.well       = well
-        self.gr_clean   = gr_clean
-        self.gr_shale   = gr_shale
-        self.rho_matrix = rho_matrix
-        self.rho_fluid  = rho_fluid
-        self.rw         = rw
-        self.rsh        = rsh
-        self.vsh_method = vsh_method
+        self.well = well
+        self.basin = basin.strip().upper() if basin is not None else None
+        basin_defaults = get_basin_defaults(self.basin) if self.basin else {}
+
+        self.gr_clean = gr_clean if gr_clean is not None else basin_defaults.get("gr_clean", 15.0)
+        self.gr_shale = gr_shale if gr_shale is not None else basin_defaults.get("gr_shale", 120.0)
+        self.rho_matrix = rho_matrix if rho_matrix is not None else basin_defaults.get("rho_matrix", 2.65)
+        self.rho_fluid = rho_fluid if rho_fluid is not None else basin_defaults.get("rho_fluid", 1.00)
+        self.rw = rw if rw is not None else basin_defaults.get("rw", 0.05)
+        self.rsh = rsh if rsh is not None else basin_defaults.get("rsh", 2.0)
+        self.vsh_method = vsh_method if vsh_method is not None else basin_defaults.get("vsh_method", "larionov_young")
+
+        self.overburden_gradient = (
+            overburden_gradient if overburden_gradient is not None
+            else basin_defaults.get("overburden_gradient", 1.0)
+        )
+        self.hydrostatic_gradient = (
+            hydrostatic_gradient if hydrostatic_gradient is not None
+            else basin_defaults.get("hydrostatic_gradient", 0.465)
+        )
+        self.normal_dt_surface = (
+            normal_dt_surface if normal_dt_surface is not None
+            else basin_defaults.get("normal_dt_surface", 120.0)
+        )
+        self.normal_dt_exp = (
+            normal_dt_exp if normal_dt_exp is not None
+            else basin_defaults.get("normal_dt_exp", -0.00025)
+        )
 
     def run(self) -> pd.DataFrame:
         """

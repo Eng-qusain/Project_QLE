@@ -186,12 +186,23 @@ class GeminiInterpreter:
     Parameters
     ----------
     api_key : str, optional  (falls back to GEMINI_API_KEY env var)
-    model   : Gemini model name (default: gemini-1.5-flash – fast & capable)
+    model   : Gemini model name. Pass None to auto-detect from available models.
+
+    Tries in order: models/gemini-1.5-pro, models/gemini-1.5-flash, models/gemini-pro
     """
+
+    _MODEL_CANDIDATES = [
+        "models/gemini-1.5-pro",
+        "models/gemini-1.5-flash",
+        "models/gemini-pro",
+        "gemini-1.5-pro",
+        "gemini-1.5-flash",
+        "gemini-pro",
+    ]
 
     def __init__(self,
                  api_key: Optional[str] = None,
-                 model: str = "gemini-1.5-flash"):
+                 model: Optional[str] = None):
         if not GEMINI_AVAILABLE:
             raise ImportError("Run: pip install google-generativeai")
 
@@ -203,11 +214,27 @@ class GeminiInterpreter:
             )
 
         genai.configure(api_key=key)
+        selected = model or self._auto_select_model()
+        self.model_name = selected
         self._model = genai.GenerativeModel(
-            model_name    = model,
+            model_name         = selected,
             system_instruction = _SYSTEM_PROMPT,
         )
-        self.model_name = model
+        logger.info("Gemini using model: %s", selected)
+
+    def _auto_select_model(self) -> str:
+        """Try each candidate and return the first available, or fallback."""
+        try:
+            available = {
+                m.name for m in genai.list_models()
+                if "generateContent" in m.supported_generation_methods
+            }
+            for candidate in self._MODEL_CANDIDATES:
+                if candidate in available:
+                    return candidate
+        except Exception:
+            pass
+        return "models/gemini-1.5-flash"
 
     def _call(self, prompt: str, max_tokens: int = 1500) -> str:
         """Single-turn call to Gemini."""
