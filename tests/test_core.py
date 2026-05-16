@@ -143,6 +143,16 @@ class TestFacies(unittest.TestCase):
         zones  = labels_to_zones(self.well.get_depth(), labels)
         self.assertGreater(len(zones), 0)
 
+    def test_kmeans_handles_nans(self):
+        from Project_QLE.analysis import KMeansFacies
+        df = self.df.copy()
+        df.loc[df.sample(frac=0.15, random_state=1).index, "GR"] = np.nan
+        df["VSHALE"] = np.nan
+
+        labels = KMeansFacies(n_clusters=4).fit_predict(df)
+        self.assertEqual(len(labels), len(df))
+        self.assertGreater(len(set(labels)), 1)
+
 
 class TestReservoir(unittest.TestCase):
     def test_summary(self):

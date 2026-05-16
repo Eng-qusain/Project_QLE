@@ -20,6 +20,7 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.impute import SimpleImputer
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -42,11 +43,23 @@ def _build_feature_matrix(df: pd.DataFrame, features: Optional[List[str]] = None
     available = [c for c in cols if c in df.columns]
     if not available:
         raise ValueError(f"None of the feature columns {cols} found in DataFrame.")
-    X = df[available].values.astype(float)
-    # Replace NaN with column median
-    col_medians = np.nanmedian(X, axis=0)
-    inds = np.where(np.isnan(X))
-    X[inds] = np.take(col_medians, inds[1])
+
+    X = df[available].astype(float).values
+    missing_mask = np.isnan(X)
+    full_nan_cols = np.all(missing_mask, axis=0)
+    if np.all(full_nan_cols):
+        raise ValueError(
+            f"None of the selected feature columns {available} contain any non-missing values."
+        )
+
+    if np.any(full_nan_cols):
+        dropped = [available[i] for i, drop in enumerate(full_nan_cols) if drop]
+        logger.warning("Dropping all-empty feature columns: %s", dropped)
+        available = [name for name, drop in zip(available, full_nan_cols) if not drop]
+        X = X[:, ~full_nan_cols]
+
+    imputer = SimpleImputer(strategy="median")
+    X = imputer.fit_transform(X)
     return X, available
 
 
