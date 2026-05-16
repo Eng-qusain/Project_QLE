@@ -1,7 +1,6 @@
 # Project_QLE – Oil Exploration Interpretation Platform
 
-> **Phase 1 — Backend Core** (prototype Streamlit dashboard included)  
-> AI-assisted well-log interpretation with both Claude and Gemini support
+
 ## Project_QLE/README.md
 ---
 
