@@ -7,7 +7,7 @@ from typing import Iterable, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-from Project_QLE.core.models import CorrelationResult, WellLog
+from project_QLE.core.models import CorrelationResult, WellLog
 
 
 def _depth_column(df: pd.DataFrame) -> str:

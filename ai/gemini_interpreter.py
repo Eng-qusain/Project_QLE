@@ -16,11 +16,11 @@ import logging
 import os
 from typing import List, Optional
 
-from Project_QLE.core.models import (
+from project_QLE.core.models import (
     InterpretationReport, ReservoirSummary,
     StatisticalResult, CorrelationResult,
 )
-from Project_QLE.core.libya_geology import get_basin_defaults, LIBYAN_BASINS
+from project_QLE.core.libya_geology import get_basin_defaults, LIBYAN_BASINS
 
 logger = logging.getLogger(__name__)
 

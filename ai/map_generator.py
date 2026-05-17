@@ -28,7 +28,7 @@ import matplotlib.tri as mtri
 from scipy.interpolate import griddata
 from pathlib import Path
 
-from Project_QLE.core.models import ReservoirSummary, WellLog
+from project_QLE.core.models import ReservoirSummary, WellLog
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,12 @@
-# GeoAI – Oil Exploration Interpretation Platform
-# Phase 1: Core backend (no UI)
+"""
+Project_QLE – Libya Petroleum Exploration & Interpretation Platform
+Waha Oil Company – Exploration Department
 
-__version__ = "0.1.0"
-__author__  = "project_QLE Platform"
+Authors:
+    Eng. Qusai Alnuaimat
+    Dr. Lutfi Dugdug
+"""
+__version__ = "1.0.0"
+__project__ = "Project_QLE"
+__authors__  = ["Eng. Qusai Alnuaimat", "Dr. Lutfi Dugdug"]
+__company__  = "Waha Oil Company – Exploration Department"
