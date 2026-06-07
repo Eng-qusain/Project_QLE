@@ -1,5 +1,5 @@
 """
-project_QLE/analysis/reservoir.py
+geoai/analysis/reservoir.py
 ─────────────────────────────
 Reservoir characterization from petrophysical results.
 
@@ -67,6 +67,45 @@ def compute_net_pay(
     depths = df[depth_col].values
     dz = np.abs(np.gradient(depths))
     return float(np.sum(dz[mask.values]))
+
+
+def compute_net_gross(
+    df: pd.DataFrame,
+    cutoffs: Optional[CutoffSet] = None,
+    depth_col: str = "DEPTH",
+) -> dict:
+    """
+    Compute Gross, Net Pay, and Net/Gross ratio.
+
+    Gross = total stratigraphic thickness of the interval (ft when converted).
+    Net   = thickness meeting all reservoir cutoffs.
+    N/G   = Net / Gross  (0–1 fraction).
+
+    Returns
+    -------
+    dict with keys: gross_m, net_m, net_gross, gross_ft, net_ft
+    """
+    from project_QLE.units import M_TO_FT
+
+    if depth_col not in df.columns:
+        return {"gross_m": 0.0, "net_m": 0.0, "net_gross": 0.0,
+                "gross_ft": 0.0, "net_ft": 0.0}
+
+    depths = df[depth_col].values
+    dz     = np.abs(np.gradient(depths))
+    gross  = float(np.sum(dz))
+
+    mask  = apply_cutoffs(df, cutoffs)
+    net   = float(np.sum(dz[mask.values]))
+    ng    = net / gross if gross > 0 else 0.0
+
+    return {
+        "gross_m"   : gross,
+        "net_m"     : net,
+        "net_gross" : ng,
+        "gross_ft"  : gross  * M_TO_FT,
+        "net_ft"    : net    * M_TO_FT,
+    }
 
 
 # ─────────────────────────────────────────────
