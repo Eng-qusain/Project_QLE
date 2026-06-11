@@ -215,7 +215,7 @@ Project_QLE/
 
 ### log correlation
 
-![Logs_Comparison](screenshots/08_log_correlation.png)
+![Logs_Comparison](screenshots/11_log_correlation.png)
 
 ### Trend analysis
 
