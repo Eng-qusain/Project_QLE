@@ -213,9 +213,9 @@ Project_QLE/
 
 ![Logs](screenshots/08_well_log_comparison.png)
 
-### log correlation
+### Log correlation
 
-![Logs_Comparison](screenshots/11_log_correlation.png)
+![Logs_Correlation](screenshots/11_log_correlation.png)
 
 ### Trend analysis
 
@@ -223,7 +223,7 @@ Project_QLE/
 
 ### ML comparison
 
-![ML_comparison](screenshots/04_ML_comparison.png)
+![ML_Comparison](screenshots/04_ML_comparison.png)
 
 ### Statistical analysis
 
