@@ -197,7 +197,6 @@ Project_QLE/
 
 # Visual Tour
 
-
 ### Dashboard Overview
 
 ![Dashboard](screenshots/01_home_dashboard.png)
@@ -210,6 +209,22 @@ Project_QLE/
 
 ![Logs](screenshots/03_well_log_viewer.png)
 
+### Well Log comparison
+
+![Logs](screenshots/08_well_log_comparison.png)
+
+### ML comparison
+
+![ML_comparison](screenshots/04_ML_comparison.png)
+
+### Statistical analysis
+
+![statistical](screenshots/05_statistical_analysis.png)
+
+### Petrophysics analysis
+
+![petrophysics](screenshots/07_petrophysics_analysis.png)
+
 ### Facies Analysis
 
 ![Facies](screenshots/06_facies_analysis.png)
@@ -218,13 +233,12 @@ Project_QLE/
 
 ![Reservoir](screenshots/12_reservoir_summary.png)
 
-```
 
 # Installation
 
 ## Clone Repository
----
-bash
+
+```bash
 git clone https://github.com/yourusername/Project_QLE.git
 
 cd Project_QLE
