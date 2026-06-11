@@ -202,10 +202,6 @@ Create a folder called:
 ```text
 screenshots/
 ```
-
-and place project screenshots inside.
-
-```markdown
 ### Dashboard Overview
 
 ![Dashboard](screenshots/01_home_dashboard.png)
