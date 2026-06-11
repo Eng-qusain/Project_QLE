@@ -197,11 +197,7 @@ Project_QLE/
 
 # Visual Tour
 
-Create a folder called:
 
-```text
-screenshots/
-```
 ### Dashboard Overview
 
 ![Dashboard](screenshots/01_home_dashboard.png)
@@ -223,13 +219,13 @@ screenshots/
 ![Reservoir](screenshots/12_reservoir_summary.png)
 ```
 
----
+
 
 # Installation
 
 ## Clone Repository
-
-```bash
+---
+bash
 git clone https://github.com/yourusername/Project_QLE.git
 
 cd Project_QLE
