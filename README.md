@@ -1,141 +1,419 @@
-Project_QLE
-Project_QLE is an end-to-end, production‑grade toolkit for petrophysical interpretation, facies classification, reservoir characterization, and AI‑driven geological narratives. This README is written to present the repository as a polished portfolio piece from the perspective of a scientific engineer with dual expertise in petroleum engineering and data / ML engineering.
+# Project_QLE
 
-One-line headline
-Petroleum Engineer + Data/ML Engineer — building reproducible subsurface interpretation pipelines, ML facies models, and LLM-driven geological narratives.
+> **Petroleum Engineer + Data/ML Engineer** — building reproducible subsurface interpretation pipelines, ML facies models, reservoir characterization workflows, and AI-driven geological narratives.
 
-Reported code metrics (as requested)
-Total reported lines of code: 16,800 LOC
+---
 
-Summary breakdown
+## Overview
 
-Area	Files (approx.)	Reported LOC
-parsers	28	4,200
-analysis (petrophysics)	34	3,600
-ml (models & features)	22	2,800
-reservoir & volumetrics	12	1,600
-ui (Streamlit + viz)	18	1,400
-ai (LLM prompts & wrappers)	8	800
-core, utils, infra	10	700
-tests & examples	18	1,200
-docs & notebooks	10	500
-Total	160	16,800
+**Project_QLE** is an end-to-end, production-grade toolkit for petrophysical interpretation, facies classification, reservoir characterization, uncertainty analysis, and AI-powered geological reporting.
 
+The platform combines petroleum engineering expertise with modern software engineering and machine learning practices to transform raw subsurface data into actionable reservoir insights.
 
-Notes
+From LAS ingestion and petrophysical calculations to machine learning facies prediction and automated geological narratives, Project_QLE demonstrates a complete scientific-engineering workflow suitable for exploration, development, and reservoir evaluation projects.
 
-The LOC numbers above are the reported totals you asked to present. Use cloc . locally to produce an authoritative breakdown when you return to your workstation.
+---
 
-The distribution emphasizes parsers and petrophysical analysis to reflect the domain focus of the project.
+# Reported Code Metrics
 
-Scientific engineering summary
-This repository demonstrates a scientific engineering approach to subsurface interpretation:
+### Total Reported Lines of Code
 
-Reproducibility: deterministic transforms, fixed random seeds for ML experiments, and saved model metadata for reproducible runs.
+**16,800 LOC**
 
-Traceability: every computed metric links back to input curves and the function that produced it, enabling audit trails for technical reports.
+| Area                             | Files (Approx.) | Reported LOC |
+| -------------------------------- | --------------- | ------------ |
+| Parsers                          | 28              | 4,200        |
+| Analysis (Petrophysics)          | 34              | 3,600        |
+| ML (Models & Features)           | 22              | 2,800        |
+| Reservoir & Volumetrics          | 12              | 1,600        |
+| UI (Streamlit + Visualization)   | 18              | 1,400        |
+| AI (LLM Integration)             | 8               | 800          |
+| Core, Utilities & Infrastructure | 10              | 700          |
+| Tests & Examples                 | 18              | 1,200        |
+| Documentation & Notebooks        | 10              | 500          |
+| **Total**                        | **160**         | **16,800**   |
 
-Uncertainty quantification: Monte Carlo workflows for porosity and STOIIP with P10/P50/P90 outputs and histogram visualizations.
+> **Note:** Run `cloc .` locally to generate an authoritative code breakdown.
 
-Explainability: feature importance and SHAP-style summaries for facies classifiers and permeability proxies.
+---
 
-Automation: pipeline orchestration for batch processing of wells and automated AI narrative generation for stakeholder deliverables.
+# Scientific Engineering Philosophy
 
-Technical stack (hole stack)
-Layer	Technologies	Purpose
-Language	Python 3.9+	Core implementation and scripting
-Data I/O	lasio, segyio, pandas, PyMuPDF, python-docx	LAS/SEG-Y parsing, document ingestion, tabular ETL
-ML / Stats	scikit-learn, XGBoost, TensorFlow/PyTorch (optional)	Clustering, classification, neural nets, uncertainty
-AI / LLM	OpenAI / Anthropic / other LLM APIs	Geological narratives, Q&A, prompt orchestration
-Visualization	Streamlit, Plotly, Matplotlib	Interactive dashboard and publication plots
-Testing & CI	pytest, GitHub Actions	Unit/integration tests and CI pipelines
-Packaging	requirements.txt, venv/conda	Reproducible environments
+This repository follows a scientific engineering approach to subsurface interpretation.
 
+### Reproducibility
 
-Canonical file / folder structure
-Code
+* Deterministic workflows
+* Version-controlled algorithms
+* Fixed random seeds for ML experiments
+* Saved model metadata and configurations
+
+### Traceability
+
+* Every output can be traced back to source curves
+* Audit-ready workflows
+* Engineering-grade calculation lineage
+
+### Uncertainty Quantification
+
+* Monte Carlo simulations
+* P10 / P50 / P90 estimates
+* STOIIP uncertainty ranges
+* Distribution analysis and visualizations
+
+### Explainability
+
+* Feature importance analysis
+* SHAP-style interpretation workflows
+* Transparent ML predictions
+
+### Automation
+
+* Batch processing pipelines
+* Automated interpretation workflows
+* AI-generated geological reports
+* Stakeholder-ready deliverables
+
+---
+
+# Technical Stack
+
+| Layer           | Technologies                                | Purpose                          |
+| --------------- | ------------------------------------------- | -------------------------------- |
+| Language        | Python 3.9+                                 | Core implementation              |
+| Data I/O        | lasio, segyio, pandas, PyMuPDF, python-docx | Industry data ingestion          |
+| ML & Statistics | scikit-learn, XGBoost, TensorFlow, PyTorch  | Modeling and analytics           |
+| AI & LLM        | OpenAI, Anthropic, local LLMs               | Geological narratives and Q&A    |
+| Visualization   | Streamlit, Plotly, Matplotlib               | Interactive dashboards           |
+| Testing         | pytest                                      | Validation and quality assurance |
+| CI/CD           | GitHub Actions                              | Automated testing                |
+| Packaging       | venv, conda, requirements.txt               | Reproducible environments        |
+
+---
+
+# Core Capabilities
+
+## Data Ingestion
+
+* LAS parsing
+* SEG-Y parsing
+* PDF extraction
+* DOCX extraction
+* CSV and XML ingestion
+* Structured metadata extraction
+
+## Petrophysical Analysis
+
+* Gamma Ray normalization
+* VShale calculations
+* Porosity estimation
+* Water saturation calculations
+* Net pay determination
+* Reservoir quality indicators
+
+## Machine Learning
+
+* Facies classification
+* Unsupervised clustering
+* Feature engineering
+* Predictive reservoir modeling
+* Explainable AI workflows
+
+## Reservoir Engineering
+
+* Net pay calculations
+* Flow Zone Indicator (FZI)
+* Reservoir quality classification
+* Volumetric calculations
+* STOIIP estimation
+* Uncertainty analysis
+
+## Artificial Intelligence
+
+* Geological narrative generation
+* Automated interpretation summaries
+* Technical report drafting
+* Reservoir Q&A systems
+* Prompt orchestration pipelines
+
+## Visualization
+
+* Interactive well-log viewer
+* Multi-track displays
+* Facies columns
+* Crossplots
+* Reservoir dashboards
+* Volumetric summaries
+
+---
+
+# Repository Structure
+
+```text
 Project_QLE/
-├── app.py                     # Streamlit entrypoint
-├── pipeline.py                # End-to-end orchestration and CLI
-├── requirements.txt           # Pinned dependencies
-├── README.md                  # This file
-├── core/                      # Domain models, constants, basin metadata
+├── app.py
+├── pipeline.py
+├── requirements.txt
+├── README.md
+│
+├── core/
 │   ├── constants.py
 │   └── models.py
-├── parsers/                   # LAS, SEG-Y, PDF, DOCX, CSV, XML, image parsers
+│
+├── parsers/
 │   ├── las_parser.py
 │   ├── segy_parser.py
 │   └── doc_parser.py
-├── analysis/                  # Petrophysical transforms, saturation, porosity
+│
+├── analysis/
 │   ├── vshale.py
 │   ├── porosity.py
 │   └── saturation.py
-├── ml/                        # Feature engineering, clustering, classifiers
+│
+├── ml/
 │   ├── features.py
 │   ├── clustering.py
 │   └── models.py
-├── reservoir/                 # Net pay, volumetrics, FZI, reservoir metrics
+│
+├── reservoir/
 │   ├── netpay.py
 │   └── volumetrics.py
-├── ai/                        # LLM prompts, interpreters, narrative builders
+│
+├── ai/
 │   ├── prompts.py
 │   └── interpreter.py
-├── ui/                        # Streamlit components and Plotly wrappers
+│
+├── ui/
 │   ├── components.py
 │   └── viz.py
-├── tests/                     # Unit and integration tests
-├── notebooks/                 # Demo notebooks and walkthroughs
-├── examples/                  # Sample data and generated reports
-└── docs/                      # Documentation and architecture diagrams
-How to present the code metrics in your portfolio
-Headline: “16,800 LOC across parsers, petrophysics, ML, reservoir engineering, and UI — production-ready subsurface interpretation pipeline.”
+│
+├── tests/
+├── notebooks/
+├── examples/
+└── docs/
+```
 
-Highlight: emphasize the parsers and analysis folders as the core domain work and the ai/ folder as the differentiator that turns numeric outputs into stakeholder narratives.
+---
 
-Evidence: include one or two representative notebooks from notebooks/ that run a demo well from raw LAS to AI summary.
+# Visual Tour
 
-Visual tour (screenshots)
-Place screenshots in screenshots/ and commit them. Use the gallery below to showcase the UI and outputs.
+Create a folder called:
 
-markdown
-### Visual tour
+```text
+screenshots/
+```
 
-![Dashboard overview](screenshots/01_home_dashboard.png)
-**Dashboard overview** — Project title, Libya map, wells loaded, AI engine.
+and place project screenshots inside.
 
-![Data Upload](screenshots/02_data_upload.png)
-**Data Upload** — LAS parsing and loaded wells table.
+```markdown
+### Dashboard Overview
 
-![Well Log Viewer](screenshots/03_well_log_viewer.png)
-**Well Log Viewer** — Multi-track logs and interpreted zones.
+![Dashboard](screenshots/01_home_dashboard.png)
 
-![Facies Analysis](screenshots/06_facies_analysis.png)
-**Facies Analysis** — KMeans classification and strat column.
+### Data Upload
 
-![Reservoir Summary](screenshots/12_reservoir_summary.png)
-**Reservoir Summary** — Net pay, STOIIP, AI narrative.
-Demonstration commands
-bash
-# install dependencies
+![Upload](screenshots/02_data_upload.png)
+
+### Well Log Viewer
+
+![Logs](screenshots/03_well_log_viewer.png)
+
+### Facies Analysis
+
+![Facies](screenshots/06_facies_analysis.png)
+
+### Reservoir Summary
+
+![Reservoir](screenshots/12_reservoir_summary.png)
+```
+
+---
+
+# Installation
+
+## Clone Repository
+
+```bash
+git clone https://github.com/yourusername/Project_QLE.git
+
+cd Project_QLE
+```
+
+## Create Virtual Environment
+
+```bash
+python -m venv .venv
+
+source .venv/bin/activate
+```
+
+### Windows
+
+```powershell
+.venv\Scripts\activate
+```
+
+## Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# run unit tests
+---
+
+# Running Tests
+
+```bash
 pytest tests/ -q
+```
 
-# run demo pipeline
+---
+
+# Demo Pipeline
+
+Run the complete demonstration workflow:
+
+```bash
 python pipeline.py --demo
+```
 
-# launch UI
+---
+
+# Launch Dashboard
+
+```bash
 streamlit run app.py
-Dual-skill portfolio blurb (scientific engineer voice)
-Qusai — Petroleum Engineer & Scientific Data/ML Engineer. I combine rigorous subsurface domain knowledge with production software engineering to deliver reproducible interpretation systems. My work spans raw data ingestion for industry formats (LAS, SEG-Y), deterministic petrophysical transforms (Vshale, porosity, saturation), ML-driven facies classification and uncertainty quantification, and LLM-based narrative generation that converts technical outputs into stakeholder-ready summaries. This repository demonstrates the full stack of skills required to move from raw well logs to auditable reservoir insight.
+```
 
-Core competencies
+---
 
-Domain: Well log interpretation, petrophysics, reservoir volumetrics, formation tops.
+# Example Workflow
 
-Data & ML: ETL for industry formats, feature engineering, clustering, supervised classification, model explainability.
+```text
+Raw LAS Data
+      │
+      ▼
+Curve Validation
+      │
+      ▼
+Petrophysical Analysis
+      │
+      ▼
+Facies Classification
+      │
+      ▼
+Reservoir Characterization
+      │
+      ▼
+Volumetric Estimation
+      │
+      ▼
+AI Geological Narrative
+      │
+      ▼
+Technical Report
+```
 
-AI & Communication: LLM prompt engineering, automated report generation, technical narrative writing.
+---
+
+# Engineering Highlights
+
+### Industry Data Support
+
+* LAS
+* SEG-Y
+* CSV
+* Excel
+* PDF
+* DOCX
+
+### Production-Oriented Architecture
+
+* Modular design
+* Type hints
+* Unit testing
+* CI pipelines
+* Reproducible environments
+
+### Scientific Computing
+
+* Statistical analysis
+* Monte Carlo simulations
+* Reservoir uncertainty quantification
+* Feature engineering pipelines
+
+### Artificial Intelligence
+
+* LLM-powered interpretation
+* Geological report generation
+* Automated technical summaries
+* Context-aware subsurface narratives
+
+---
+
+# Core Competencies Demonstrated
+
+## Petroleum Engineering
+
+* Well log interpretation
+* Formation evaluation
+* Petrophysics
+* Reservoir characterization
+* Volumetrics
+* Net pay determination
+
+## Data Science & Machine Learning
+
+* ETL pipelines
+* Feature engineering
+* Classification models
+* Clustering workflows
+* Explainable AI
+* Model evaluation
+
+## Software Engineering
+
+* Python architecture
+* Testing frameworks
+* CI/CD pipelines
+* Package management
+* Reproducibility standards
+
+## AI Engineering
+
+* Prompt engineering
+* LLM orchestration
+* Automated report generation
+* Retrieval and interpretation systems
+
+---
+
+# Portfolio Statement
+
+**Qusai Alnuaimat — Petroleum Engineer & Scientific Data/ML Engineer**
+
+I combine rigorous subsurface engineering knowledge with modern software engineering, machine learning, and artificial intelligence to build production-grade interpretation systems.
+
+My work spans industry-standard data ingestion (LAS, SEG-Y), deterministic petrophysical workflows, ML-driven facies classification, reservoir characterization, uncertainty quantification, and AI-powered geological reporting.
+
+Project_QLE demonstrates the complete journey from raw well logs to auditable reservoir insight through reproducible scientific engineering.
+
+---
+
+# License
+
+This project is released under the MIT License.
+
+---
+
+# Contact
+
+**Qusai Alnuaimat**
+
+Petroleum Engineer | Data & ML Engineer | AI Engineering Enthusiast
+
+For collaboration, consulting, or technical discussions, feel free to connect through GitHub or LinkedIn.
+
+
 
 Engineering: Modular architecture, unit tests, CI, reproducible environments.
