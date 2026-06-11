@@ -213,25 +213,33 @@ Project_QLE/
 
 ![Logs](screenshots/08_well_log_comparison.png)
 
+### log correlation
+
+![Logs_Comparison](screenshots/08_log_correlation.png)
+
+### Trend analysis
+
+![Trend](screenshots/09_trend_analysis.png)
+
 ### ML comparison
 
 ![ML_comparison](screenshots/04_ML_comparison.png)
 
 ### Statistical analysis
 
-![statistical](screenshots/05_statistical_analysis.png)
+![Statistical](screenshots/05_statistical_analysis.png)
 
 ### Petrophysics analysis
 
-![petrophysics](screenshots/07_petrophysics_analysis.png)
+![Petrophysics](screenshots/07_petrophysics_analysis.png)
 
 ### Facies Analysis
 
 ![Facies](screenshots/06_facies_analysis.png)
 
-### Reservoir Summary
+### AI interpretation
 
-![Reservoir](screenshots/12_reservoir_summary.png)
+![AI](screenshots/10_AI_interpretation.png)
 
 
 # Installation
