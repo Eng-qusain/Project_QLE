@@ -12,28 +12,7 @@ The platform combines petroleum engineering expertise with modern software engin
 
 From LAS ingestion and petrophysical calculations to machine learning facies prediction and automated geological narratives, Project_QLE demonstrates a complete scientific-engineering workflow suitable for exploration, development, and reservoir evaluation projects.
 
----
 
-# Reported Code Metrics
-
-### Total Reported Lines of Code
-
-**16,800 LOC**
-
-| Area                             | Files (Approx.) | Reported LOC |
-| -------------------------------- | --------------- | ------------ |
-| Parsers                          | 28              | 4,200        |
-| Analysis (Petrophysics)          | 34              | 3,600        |
-| ML (Models & Features)           | 22              | 2,800        |
-| Reservoir & Volumetrics          | 12              | 1,600        |
-| UI (Streamlit + Visualization)   | 18              | 1,400        |
-| AI (LLM Integration)             | 8               | 800          |
-| Core, Utilities & Infrastructure | 10              | 700          |
-| Tests & Examples                 | 18              | 1,200        |
-| Documentation & Notebooks        | 10              | 500          |
-| **Total**                        | **160**         | **16,800**   |
-
-> **Note:** Run `cloc .` locally to generate an authoritative code breakdown.
 
 ---
 
